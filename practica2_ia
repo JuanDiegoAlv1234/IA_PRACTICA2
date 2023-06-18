@@ -1,0 +1,17 @@
+inicio :- write('Bienvenido al mejor selección de hoteles en Latinoamerica'), nl, nl,
+write(' Ingrese la opción que desee: '),nl,
+format('\t 1. Presupuesto
+        \t 2. Lenguaje
+        \t 3. Estrellas
+        \t 4. Clima
+        \t 5. Select an option:'), nl,
+read(SELECCION),
+opcion(SELECCION), nl.
+
+opcion(SELECCION):-(
+    SELECCION == 1 -> presupuesto;
+    SELECCION == 2 -> language;
+    SELECCION == 3 -> stars;
+    SELECCION == 4 -> weather).
+
+presupuesto:-write('presupuesto').
