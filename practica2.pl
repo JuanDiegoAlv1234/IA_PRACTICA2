@@ -13,7 +13,7 @@
     departamento(9, baja_verapaz, 5, ingles, templado, 200).
     departamento(10, santa_rosa, 4, ingles, calor, 100).
     departamento(11, zacapa, 3, ingles, calor, 100).
-    departamento(12, suchitepequez, 5, espanol, templado, 50).
+    departamento(12, suchitepequez, 5,  espanol, templado, 50).
     departamento(13, chiquimula, 4, katchikel, calor, 300).
     departamento(14, guatemala, 0, ingles, templado, 10).
     departamento(15, jalapa, 4, ingles, calor, 100).
@@ -143,7 +143,7 @@ hotel(28, 'Yocute', 'Km 500', 4, '350.00', '500.00', '100.00', 9, 500).
     trabajador(3, 'Julio Ortega', 'Administrador', 1).
     trabajador(4, 'Jorge Po', 'Recepcionista', 1).
     trabajador(5, 'Paul Coc', 'Oficinista', 1).
-    trabajador(6, 'Enrique', 'Oficinista', 1).
+    trabajador(6, 'Enrique', 'Oficinista',  1).
     trabajador(7, 'Lorena', 'Oficinista', 1).
     trabajador(8, 'Mario', 'Oficinista', 1).
     trabajador(9, 'Pablo', 'Limpieza', 1).
@@ -442,8 +442,8 @@ hotel(28, 'Yocute', 'Km 500', 4, '350.00', '500.00', '100.00', 9, 500).
 
 
 % * Menu
-inicio :- write('Bienvenido a la mejor selección de hoteles en Latinoamérica'), nl, nl,
-          write('Ingrese la opción que desee: '), nl,
+inicio :- write('Bienvenido a la mejor seleccion de hoteles en Latinoamérica'), nl, nl,
+          write('Ingrese la opcion que desee para ver su  viaje: '), nl,
           format('\t1. Presupuesto\n\t2. Lenguaje\n\t3. Estrellas\n\t4. Clima\n\t5. Reportes\n'), nl,
           read(SELECCION),
           opcion(SELECCION), nl.
@@ -455,24 +455,58 @@ opcion(SELECCION) :-
    SELECCION == 4 -> clima;
    SELECCION == 5 -> opcionrep).
 
-opcionrep :- nl, nl,
-             write('Ingrese la opción que desee: '), nl,
-             format('\t1. rep1\n\t2. rep2\n\t3. rep3\n\t4. rep4\n\t5. rep5\n'), nl,
-             read(SELECCION),
-             menurep(SELECCION), nl.
+opcionrep :-
+    nl, nl,
+    write(' Ingrese el reporte que desea ver: '), nl,
+    tab(4), write('1. rep1'), nl,
+    tab(4), write('2. rep2'), nl,
+    tab(4), write('3. rep3'), nl,
+    tab(4), write('4. rep4'), nl,
+    tab(4), write('5. rep5'), nl,
+    tab(4), write('6. rep6'), nl,
+    tab(4), write('7. rep7'), nl,
+    tab(4), write('8. rep8'), nl,
+    tab(4), write('9. rep9'), nl,
+    tab(4), write('10. regresar a menu'), nl,
+    read(SELECCION),
+    menurep(SELECCION), nl.
 
 menurep(SELECCION) :-
   (SELECCION == 1 -> rep1;
    SELECCION == 2 -> rep2;
    SELECCION == 3 -> rep3;
    SELECCION == 4 -> rep4;
-   SELECCION == 5 -> rep5).
+   SELECCION == 5 -> rep5;
+   SELECCION == 6 -> rep6;
+   SELECCION == 7 -> rep7;
+   SELECCION == 8 -> rep8;
+   SELECCION == 9 -> rep9;
+   
+   SELECCION == 10 -> inicio
+   ).
 
 
 
-rep1 :- write('REPORTE1').
+rep1 :-
+    write('=============REPORTE  1============='),nl,
+    cliente(IDCliente,Nombrec,Apellido,PaisCliente,_,_,_),
+    registro(_,IdclienteR,_,_,_,Opinion),
+    IDCliente=IdclienteR,
+    Opinion>5,
+    (
+        PaisCliente = 'italia';
+        PaisCliente = 'espanola';
+        PaisCliente = 'inglaterra';
+        PaisCliente = 'holanda';
+        PaisCliente = 'espanol'
+    ),
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Apellido,Opinion]),
+    format('|~`-t~45||~n'),nl, fail, true,opcionrep().
 
-rep2 :- write('REPORTE2'),
+
+
+rep2 :- write('=============REPORTE2============='),nl,
 
 hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
 cliente(IDCliente,Nombrec,_,_,_,Estadocivil,_),
@@ -480,20 +514,18 @@ cliente(IDCliente,Nombrec,_,_,_,Estadocivil,_),
 registro(_,IDClienteR,IDhotelR,_,_,Opinion),
 %condiciones
 IDCliente==IDClienteR,
-IDClienteR==IDhotel,
+IDhotel==IDhotelR,
 Estrellash > 4,
 nl,
-format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Estrellash,Estadocivil,IDhotel]),
-format('|~`-t~45||~n'),
-fail.
-
+format('|~t~a~t~15+|opinion: ~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Estrellash,Estadocivil,IDhotel]),
+format('|~`-t~45||~n'),nl, fail, true,opcionrep.
 
 
 rep3 :-
-    write('REPORTE3'), nl,
-    findall([NombreT, Opinion, IDhotel, CargoT], 
+    write('=============REPORTE 3   ============='), nl,
+    findall([NombreT, Opinion, NombreH, CargoT],
             (
-                hotel(IDhotel, _, _, _, _, _, _, _, _),
+                hotel(IDhotel, NombreH, _, _, _, _, _, _, _),
                 trabajador(_, NombreT, CargoT, HotelT),
                 HotelT == IDhotel,
                 CargoT == 'Administrador',
@@ -502,17 +534,14 @@ rep3 :-
                 Opinion >= 5
             ),
             Resultados),
-
-    print_results(Resultados).
+    print_results(Resultados),
+nl, fail, true,opcionrep().
 
 print_results([]).
-print_results([[NombreT, Opinion, IDhotel, CargoT]|Resto]) :-
-    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [NombreT,Opinion,IDhotel,CargoT]),
+print_results([[NombreT, Opinion, NombreH, CargoT]|Resto]) :-
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [NombreT,Opinion,NombreH,CargoT]),
     format('|~`-t~45||~n'),
     print_results(Resto).
-
-
-
 
 
 % Para contar las reservaciones de cada hotel
@@ -540,7 +569,7 @@ top5_hoteles :-
     findall([Count, IDhotel], (reservaciones_hotel(IDhotel, Count), hotel(IDhotel, _, _, _, _, _, _, IDdep, _), departamento(IDdep, _, _, _, Clima, _), Clima == 'calor'), ListaReservaciones),
     sort(1, @>=, ListaReservaciones, SortedReservaciones),
     take(5, SortedReservaciones, Top5Reservaciones),
-    format('Top 5 Hoteles con mas reservaciones en clima cálido:'), nl,
+    format('Top 5 Hoteles con mas reservaciones en clima Calido'), nl,
     print_top5(Top5Reservaciones).
 
 % Para obtener el top 5 departamentos con mas reservaciones en clima cálido
@@ -569,51 +598,139 @@ print_top5_departamentos([[Count, ID]|Rest]) :-
     print_top5_departamentos(Rest).
 
 rep4 :-
+    write('=============REPORTE4============='), nl,
     top5_hoteles,
     nl,
-    top5_departamentos.
+    top5_departamentos,opcionrep.
 
 
-rep5 :- 
-    write('REPORTE5'),
+rep5 :-
+    write('=============REPORTE 5============='),
     hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
     cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
     departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
     registro(IDdepR,IDClienteR,IDhotelR,_,_,Opinion),
     %condiciones
-    format('La primera condición  IDCliente = ~w, IDClienteR = ~w', [IDCliente, IDClienteR]), nl,
+
     IDCliente==IDClienteR,
-    format('La segunda condición  IDhotel = ~w, IDhotelR = ~w', [IDhotel, IDhotelR]), nl,
-    IDhotel==IDhotelR,
-    format('La tercera condición: IDdepR = ~w, IDdep = ~w', [IDdepR, IDdep]), nl,
+
     IDdepR==IDdep,
-    format('La cuarta condición  Lenguajed = ~w', [Lenguajed]), nl,
+
     Lenguajed == 'espanol',
-    format('La quinta condición  Paiscliente != Guatemala, Paiscliente = ~w', [Paiscliente]), nl,
+
     dif(Paiscliente, 'Guatemala'),
     nl,
     format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Paiscliente,Nombred,Nombreh]),
+    format('|~`-t~45||~n'),nl, fail, true,
+    opcionrep.
+
+
+rep6 :- write('=============REPORTE 6============='),nl,
+
+
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+
+
+    Opinion >=7,
+    Estadia >=3,
+
+
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Nombreh,Nombred,Lenguajed]),
     format('|~`-t~45||~n'),
-    fail.
+    fail,opcionrep.
 
 
-rep6 :- write('REPORTE6').
+
+
+rep7 :- write('=============REPORTE 7============='),nl,
+
+
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdeph,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+    IDdep==IDdeph,
+    Estadia < 2,
+    Lenguajed=='ingles',
+    dif(Paiscliente, 'Guatemala'),
+
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Nombreh,Paiscliente,Lenguajed]),
+    format('|~`-t~45||~n'),nl, fail, true,opcionrep.
+
+
+.
+rep8 :- write('=============REPORTE8============='),nl,
+
+
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdeph,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+    IDdep==IDdeph,
+    Nombred=='peten',
+
+
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Nombreh,Paiscliente,Nombred]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
+
+
+
+rep9 :- write('=============REPORTE9============='),nl,
+
+
+    hotel(IDhotel,Nombreh,Direccionh,Estrellash,_,_,_,IDdeph,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+    Opinion>6,
+
+    Estadocivil=='casado',
+    Estadia >=3,
+
+
+
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombreh,Direccionh,Nombrec,Estadocivil]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
+
+
+
 presupuesto :-
   write('Ingrese su presupuesto: '),
   read(PRESUPUESTO),
   separadorpresupuesto(PRESUPUESTO).
 
 separadorpresupuesto(PRESUPUESTO) :-
-  PRESUPUESTO =< 3000 -> whitemalan(PRESUPUESTO);
-  PRESUPUESTO >= 3000 -> barato(PRESUPUESTO);
-  moderado(PRESUPUESTO).
+  PRESUPUESTO =< 3000 -> barato(PRESUPUESTO);
+  PRESUPUESTO >= 3000 -> whitemalan(PRESUPUESTO)
+.
 clima() :-
   write('Que clima seria de preferencia para su estadia? (unicamente puede escoger entre /tropical/calor/frio/templado/ ) '), nl,
   read(CLIMA),
-  write('Que cantidad de estrellas seria de su preferencia para su destino? (tiene un rango de 1 a 5)'), nl,
-  read(ESTRELLAS),
-  write('Que idioma seria de preferencia para su destino? (TIENE  PARA ESCOGER entre  /espanol/katchikel/ingles/Ketchi)'), nl,
-  read(IDIOMA),
   write('Ingrese su presupuesto: '),
   read(PRESUPUESTO),
 
@@ -626,19 +743,15 @@ clima() :-
   write('Llevara vehiculo le suplicamos que ingrese 1 si llevara vehiculo y 2 sino llevara'), nl,
   read(VEHICULO),
   (VEHICULO == 2 ->
-    opcionescalculoclima(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'bus');
+    opcionescalculoclima(PRESUPUESTO, '', '', CLIMA, HABITACION,0, DISTANCIA, DIAS, 'bus');
    VEHICULO == 1 ->
-    opcionescalculoclima(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'vehiculo')).
+    opcionescalculoclima(PRESUPUESTO, '', '', CLIMA, HABITACION,0, DISTANCIA, DIAS, 'vehiculo')).
 estrella() :-
 
   write('Que cantidad de estrellas seria de su preferencia para su destino? (tiene un rango de 1 a 5)'), nl,
   read(ESTRELLAS),
-  write('Que idioma seria de preferencia para su destino? (TIENE  PARA ESCOGER entre  /espanol/katchikel/ingles/Ketchi)'), nl,
-  read(IDIOMA),
   write('Ingrese su presupuesto: '),
   read(PRESUPUESTO),
-  write('Que clima seria de preferencia para su estadia? (unicamente puede escoger entre /tropical/calor/frio/templado/ ) '), nl,
-  read(CLIMA),
   write('Que habitacion seria de su agrado (escoja entre /simple o doble/)'), nl,
   read(HABITACION),
   write('Que distancia estaria dispuesto a recorrer? tiene un limite de 700km'), nl,
@@ -648,9 +761,9 @@ estrella() :-
   write('Llevara vehiculo le suplicamos que ingrese 1 si llevara vehiculo y 2 sino llevara'), nl,
   read(VEHICULO),
   (VEHICULO == 2 ->
-    opcionespresupuestoestrellas(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'bus');
+    opcionespresupuestoestrellas(PRESUPUESTO, '', ESTRELLAS, '', HABITACION,0, DISTANCIA, DIAS, 'bus');
    VEHICULO == 1 ->
-    opcionespresupuestoestrellas(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'vehiculo')).
+    opcionespresupuestoestrellas(PRESUPUESTO, '', ESTRELLAS, '', HABITACION,0, DISTANCIA, DIAS, 'vehiculo')).
 
 lenguaje() :-
 
@@ -658,10 +771,6 @@ lenguaje() :-
   read(IDIOMA),
   write('Ingrese su presupuesto: '),
   read(PRESUPUESTO),
-  write('Que cantidad de estrellas seria de su preferencia para su destino? (tiene un rango de 1 a 5)'), nl,
-  read(ESTRELLAS),
-  write('Que clima seria de preferencia para su estadia? (unicamente puede escoger entre /tropical/calor/frio/templado/ ) '), nl,
-  read(CLIMA),
   write('Que habitacion seria de su agrado (escoja entre /simple o doble/)'), nl,
   read(HABITACION),
   write('Que distancia estaria dispuesto a recorrer? tiene un limite de 700km'), nl,
@@ -671,18 +780,12 @@ lenguaje() :-
   write('Llevara vehiculo le suplicamos que ingrese 1 si llevara vehiculo y 2 sino llevara'), nl,
   read(VEHICULO),
   (VEHICULO == 2 ->
-    opcionespresupuestolenguaje(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'bus');
+    opcionespresupuestolenguaje(PRESUPUESTO, IDIOMA, '', '', HABITACION,0, DISTANCIA, DIAS, 'bus');
    VEHICULO == 1 ->
-    opcionespresupuestolenguaje(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'vehiculo')).
+    opcionespresupuestolenguaje(PRESUPUESTO, IDIOMA, '', '', HABITACION,0, DISTANCIA, DIAS, 'vehiculo')).
 
 whitemalan(PRESUPUESTO) :-
   write('Presupuesto whitemalan'), nl,
-  write('Que idioma seria de preferencia para su destino? (TIENE  PARA ESCOGER entre  /espanol/katchikel/ingles/Ketchi)'), nl,
-  read(IDIOMA),
-  write('Que cantidad de estrellas seria de su preferencia para su destino? (tiene un rango de 1 a 5)'), nl,
-  read(ESTRELLAS),
-  write('Que clima seria de preferencia para su estadia? (unicamente puede escoger entre /tropical/calor/frio/templado/ ) '), nl,
-  read(CLIMA),
   write('Que habitacion seria de su agrado (escoja entre /simple o doble/)'), nl,
   read(HABITACION),
   write('Que distancia estaria dispuesto a recorrer? tiene un limite de 700km'), nl,
@@ -692,18 +795,12 @@ whitemalan(PRESUPUESTO) :-
   write('Llevara vehiculo le suplicamos que ingrese 1 si llevara vehiculo y 2 sino llevara'), nl,
   read(VEHICULO),
   (VEHICULO == 2 ->
-    opcionespresupuestocaro(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'bus');
+    opcionespresupuestocaro(PRESUPUESTO, '', '', '', HABITACION,0, DISTANCIA, DIAS, 'bus');
    VEHICULO == 1 ->
-    opcionespresupuestocaro(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'vehiculo')).
+    opcionespresupuestocaro(PRESUPUESTO, '', '', '', HABITACION,0, DISTANCIA, DIAS, 'vehiculo')).
 
 barato(PRESUPUESTO) :-
-   write('Presupuesto barato'), nl,
-  write('Que idioma seria de preferencia para su destino? (TIENE  PARA ESCOGER entre  /espanol/katchikel/ingles/Ketchi)'), nl,
-  read(IDIOMA),
-  write('Que cantidad de estrellas seria de su preferencia para su destino? (tiene un rango de 1 a 5)'), nl,
-  read(ESTRELLAS),
-  write('Que clima seria de preferencia para su estadia? (unicamente puede escoger entre /tropical/calor/frio/templado/ ) '), nl,
-  read(CLIMA),
+  write('Presupuesto whitemalan'), nl,
   write('Que habitacion seria de su agrado (escoja entre /simple o doble/)'), nl,
   read(HABITACION),
   write('Que distancia estaria dispuesto a recorrer? tiene un limite de 700km'), nl,
@@ -713,20 +810,20 @@ barato(PRESUPUESTO) :-
   write('Llevara vehiculo le suplicamos que ingrese 1 si llevara vehiculo y 2 sino llevara'), nl,
   read(VEHICULO),
   (VEHICULO == 2 ->
-    opcionespresupuestogara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'bus');
+    opcionespresupuestocaro(PRESUPUESTO, '', '', '', HABITACION,0, DISTANCIA, DIAS, 'bus');
    VEHICULO == 1 ->
-    opcionespresupuestogara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, 'vehiculo')).
+    opcionespresupuestocaro(PRESUPUESTO, '', '', '', HABITACION,0, DISTANCIA, DIAS, 'vehiculo')).
 
  %% calculo por clima
- opcionescalculoclima(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> climasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'simple', VEHICULO == 'bus') -> climasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'doble', VEHICULO == 'bus') -> climadb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-     (HABITACION == 'doble', VEHICULO == 'vehiculo') -> climadv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO)
+ opcionescalculoclima(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> climasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'simple', VEHICULO == 'bus') -> climasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'doble', VEHICULO == 'bus') -> climadb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+     (HABITACION == 'doble', VEHICULO == 'vehiculo') -> climadv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO)
 
 
     ).
-climasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+climasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
@@ -748,7 +845,7 @@ Sumatoria =< PRESUPUESTO,
 
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
-climadv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+climadv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
@@ -770,16 +867,16 @@ CLIMA == Climad,
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
 
-climasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+climasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
   atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hsimple * DIAS),
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
 	write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
 	DISTANCIA =< Distanciah,
@@ -787,19 +884,19 @@ write('Comparación de CLIMA y Climad: '), write(CLIMA), write(' y '), write(Cli
 CLIMA == Climad,
 write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
 Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
-climadb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+climadb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
   atom_number(HbdobleAtom, Hbdoble),  % Convierte HbdobleAtom a número
   atom_number(PcomidaAtom, PcomidaNum),  % Convierte PcomidaAtom a número
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hbdoble * DIAS),  % Se usará Hbdoble aquí, no HbdobleAtom
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
   write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
   DISTANCIA =< Distanciah,
@@ -807,17 +904,17 @@ write('Comparación de CLIMA y Climad: '), write(CLIMA), write(' y '), write(Cli
 CLIMA == Climad,
   write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
   Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
  %% calculo por estrella
- opcionespresupuestoestrellas(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> estrellasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'simple', VEHICULO == 'bus') -> estrellasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'doble', VEHICULO == 'bus') -> estrellasdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-     (HABITACION == 'doble', VEHICULO == 'vehiculo') -> estrellasdv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO)
+ opcionespresupuestoestrellas(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> estrellasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'simple', VEHICULO == 'bus') -> estrellasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'doble', VEHICULO == 'bus') -> estrellasdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+     (HABITACION == 'doble', VEHICULO == 'vehiculo') -> estrellasdv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO)
 
 
     ).
-estrellasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+estrellasv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
@@ -839,7 +936,7 @@ Sumatoria =< PRESUPUESTO,
 
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
-estrellasdv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+estrellasdv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
@@ -861,16 +958,16 @@ estrellasdv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, 
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
 
-estrellasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+estrellasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
   atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hsimple * DIAS),
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
 	write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
 	DISTANCIA =< Distanciah,
@@ -878,19 +975,19 @@ estrellasb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, D
   ESTRELLAS == EstrellasH,
 write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
 Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
-estrellasdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+estrellasdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
   atom_number(HbdobleAtom, Hbdoble),  % Convierte HbdobleAtom a número
   atom_number(PcomidaAtom, PcomidaNum),  % Convierte PcomidaAtom a número
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hbdoble * DIAS),  % Se usará Hbdoble aquí, no HbdobleAtom
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
   write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
   DISTANCIA =< Distanciah,
@@ -898,21 +995,21 @@ estrellasdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, 
   ESTRELLAS == EstrellasH,
   write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
   Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
  %% calculo por lenguaje
- opcionespresupuestolenguaje(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> lenguajesv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'simple', VEHICULO == 'bus') -> lenguajesb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'doble', VEHICULO == 'bus') -> lenguajesdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-     (HABITACION == 'doble', VEHICULO == 'vehiculo') -> lenguajedv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO)
+ opcionespresupuestolenguaje(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> lenguajesv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'simple', VEHICULO == 'bus') -> lenguajesb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'doble', VEHICULO == 'bus') -> lenguajesdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+     (HABITACION == 'doble', VEHICULO == 'vehiculo') -> lenguajedv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO)
 
 
     ).
-lenguajesv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+lenguajesv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-  CostoTransporte is (Distanciah * 12.5) * 2,
+  CostoTransporte is (DISTANCIA * 12.5) * 2,
   atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
   atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
   CostoComida is (3 * PcomidaNum * DIAS),
@@ -930,7 +1027,7 @@ Sumatoria =< PRESUPUESTO,
 
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
-lenguajedv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+lenguajedv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
@@ -952,16 +1049,16 @@ lenguajedv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, D
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
 
-lenguajesb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-  departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+lenguajesb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+  departamento(IDdep, Nombred, _, Lenguajed, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
   atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hsimple * DIAS),
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
 	write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
 	DISTANCIA =< Distanciah,
@@ -969,19 +1066,19 @@ lenguajesb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, D
   IDIOMA == Lenguajed,
 write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
 Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
-lenguajesdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-  departamento(IDdep, Nombred, _, _, Climad, Pasajed),
+lenguajesdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+  departamento(IDdep, Nombred, _, Lenguajed, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
   atom_number(HbdobleAtom, Hbdoble),  % Convierte HbdobleAtom a número
   atom_number(PcomidaAtom, PcomidaNum),  % Convierte PcomidaAtom a número
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hbdoble * DIAS),  % Se usará Hbdoble aquí, no HbdobleAtom
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
   write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
   DISTANCIA =< Distanciah,
@@ -989,13 +1086,13 @@ lenguajesdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, 
   IDIOMA == Lenguajed,
   write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
   Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
  %% PRESUPUESTO CARO
- opcionespresupuestocaro(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> calculopresupuestoCAROfinalsv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'simple', VEHICULO == 'bus') -> calculopresupuestoCAROfinalsb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'doble', VEHICULO == 'bus') -> calculopresupuestoCAROfinaldb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-      (HABITACION == 'doble', VEHICULO == 'vehiculo') -> calculopresupuestoCAROfinaldv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO)
+ opcionespresupuestocaro(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> calculopresupuestoCAROfinalsv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'simple', VEHICULO == 'bus') -> calculopresupuestoCAROfinalsb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'doble', VEHICULO == 'bus') -> calculopresupuestoCAROfinaldb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+      (HABITACION == 'doble', VEHICULO == 'vehiculo') -> calculopresupuestoCAROfinaldv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO)
 
 
     ).
@@ -1014,7 +1111,7 @@ lenguajesdb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, 
  %% PRESUPUESTO CARO
  %% PRESUPUESTO CARO
  %% PRESUPUESTO CARO
-calculopresupuestoCAROfinalsv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestoCAROfinalsv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
@@ -1031,7 +1128,7 @@ write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y 
 Sumatoria =< PRESUPUESTO,
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
-calculopresupuestoCAROfinaldv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestoCAROfinaldv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
@@ -1050,54 +1147,54 @@ calculopresupuestoCAROfinaldv(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
 
-calculopresupuestoCAROfinalsb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestoCAROfinalsb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
   atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hsimple * DIAS),
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
 write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
 DISTANCIA =< Distanciah,
 write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
 Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
-calculopresupuestoCAROfinaldb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestoCAROfinaldb(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
   atom_number(HbdobleAtom, Hbdoble),  % Convierte HbdobleAtom a número
   atom_number(PcomidaAtom, PcomidaNum),  % Convierte PcomidaAtom a número
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hbdoble * DIAS),  % Se usará Hbdoble aquí, no HbdobleAtom
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
   write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
   DISTANCIA =< Distanciah,
   write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
   Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
  %% PRESUPUESTO gara PRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO garaPRESUPUESTO gara
- opcionespresupuestogara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
-    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> calculopresupuestofinalsvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'simple', VEHICULO == 'bus') -> calculopresupuestofinalsbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'doble', VEHICULO == 'bus') -> calculopresupuestofinaldbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO);
-    (HABITACION == 'doble', VEHICULO == 'vehiculo') -> calculopresupuestofinaldvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,COSTOHABITACION, DISTANCIA, DIAS, VEHICULO)
+ opcionespresupuestogara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO) :-
+    ((HABITACION == 'simple', VEHICULO == 'vehiculo') -> calculopresupuestofinalsvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'simple', VEHICULO == 'bus') -> calculopresupuestofinalsbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'doble', VEHICULO == 'bus') -> calculopresupuestofinaldbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO);
+    (HABITACION == 'doble', VEHICULO == 'vehiculo') -> calculopresupuestofinaldvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,CostoHab, DISTANCIA, DIAS, VEHICULO)
 
 
     ).
 
  %% PRESUPUESTO gara
  %% PRESUPUESTO gara
-calculopresupuestofinalsvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestofinalsvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
@@ -1114,7 +1211,7 @@ write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y 
 Sumatoria =< PRESUPUESTO,
   presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
 
-calculopresupuestofinaldvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestofinaldvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, _),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
@@ -1134,55 +1231,53 @@ calculopresupuestofinaldvgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION,
 
 
 
-calculopresupuestofinalsbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestofinalsbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
   atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hsimple * DIAS),
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
 write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
 DISTANCIA =< Distanciah,
 write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
 Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
-calculopresupuestofinaldbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, COSTOHABITACION, DISTANCIA, DIAS, VEHICULO) :-
+calculopresupuestofinaldbgara(PRESUPUESTO, IDIOMA, ESTRELLAS, CLIMA, HABITACION, CostoHab, DISTANCIA, DIAS, VEHICULO) :-
   departamento(IDdep, Nombred, _, _, Climad, Pasajed),
   hotel(IDhotel, Nombreh, Direccion, EstrellasH, _, HbdobleAtom, PcomidaAtom, IDdep, Distanciah),
 
   atom_number(HbdobleAtom, Hbdoble),  % Convierte HbdobleAtom a número
   atom_number(PcomidaAtom, PcomidaNum),  % Convierte PcomidaAtom a número
 
-  CostoPasaje is (Pasajed * 2) ,
+  CostoTransporte is (Pasajed * 2) ,
   CostoComida is (3 * PcomidaNum * DIAS),
   CostoHabitacion is (Hbdoble * DIAS),  % Se usará Hbdoble aquí, no HbdobleAtom
-  Sumatoria is CostoPasaje + CostoComida + CostoHabitacion,
+  Sumatoria is CostoTransporte + CostoComida + CostoHabitacion,
 
   write('Comparación de DISTANCIA y Distanciah: '), write(DISTANCIA), write(' y '), write(Distanciah), nl,
   DISTANCIA =< Distanciah,
   write('Comparación de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(PRESUPUESTO), nl,
   Sumatoria =< PRESUPUESTO,
-  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'CARRO CHOCON').
+  presupuestofinal1(Nombred,Direccion,DISTANCIA, 'SIMPLE', Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte,'BUS ESMERALDA').
 
 presupuestofinal1(Nombred,Direccion,DISTANCIA  , Hsimple, Sumatoria, Nombreh, DIAS, CostoHabitacion, CostoComida,CostoTransporte, VEHICULO) :-
-
-  format('	Departamento: ~a
-			Direccion: ~a
+  format('Departamento: ~a
+            Direccion: ~a
             DISTANCIA: ~a
-		    Hotel: ~a
+            Hotel: ~a
             TipoHabitacion: ~a
             CostoTotal: ~a
             CostoHabitacion: ~a
             CostoComida: ~a
-			CostoTransporte: ~a
+            CostoTransporte: ~a
             Dias: ~a
             Vehiculo: ~a
-
   ', [Nombred,Direccion,DISTANCIA, Nombreh, Hsimple, Sumatoria, CostoHabitacion, CostoComida, CostoTransporte, DIAS,VEHICULO]).
 
 % Resto de las reglas y cláusulas...

@@ -13,7 +13,7 @@
     departamento(9, baja_verapaz, 5, ingles, templado, 200).
     departamento(10, santa_rosa, 4, ingles, calor, 100).
     departamento(11, zacapa, 3, ingles, calor, 100).
-    departamento(12, suchitepequez, 5, espanol, templado, 50).
+    departamento(12, suchitepequez, 5,  espanol, templado, 50).
     departamento(13, chiquimula, 4, katchikel, calor, 300).
     departamento(14, guatemala, 0, ingles, templado, 10).
     departamento(15, jalapa, 4, ingles, calor, 100).
@@ -62,7 +62,8 @@ hotel(28, 'Yocute', 'Km 500', 4, '350.00', '500.00', '100.00', 9, 500).
 
 
 % * ==========================================================
-% * hecho cliente (idcliente, nombre, apellido, pais, edad, estado_civil, motivo)
+% * hecho cliente (idcliente, nombre, apellido, pais, edad,
+% estado_civil, motivo)
     cliente(1, jose, morales, guatemala, 27, soltero, vacaciones).
     cliente(2, fabrizio, sartini, italia, 25, casado, vacaciones).
     cliente(3, gustavo, molina, holanda, 15, soltero, trabajo).
@@ -454,24 +455,55 @@ opcion(SELECCION) :-
    SELECCION == 4 -> clima;
    SELECCION == 5 -> opcionrep).
 
-opcionrep :- nl, nl,
-             write('Ingrese la opción que desee: '), nl,
-             format('\t1. rep1\n\t2. rep2\n\t3. rep3\n\t4. rep4\n\t5. rep5\n'), nl,
-             read(SELECCION),
-             menurep(SELECCION), nl.
+opcionrep :-
+    nl, nl,
+    write(' Ingrese el reporte que desea ver: '), nl,
+    tab(4), write('1. rep1'), nl,
+    tab(4), write('2. rep2'), nl,
+    tab(4), write('3. rep3'), nl,
+    tab(4), write('4. rep4'), nl,
+    tab(4), write('5. rep5'), nl,
+    tab(4), write('6. rep6'), nl,
+    tab(4), write('7. rep7'), nl,
+    tab(4), write('8. rep8'), nl,
+    tab(4), write('9. rep9'), nl,
+    read(SELECCION),
+    menurep(SELECCION), nl.
 
 menurep(SELECCION) :-
   (SELECCION == 1 -> rep1;
    SELECCION == 2 -> rep2;
    SELECCION == 3 -> rep3;
    SELECCION == 4 -> rep4;
-   SELECCION == 5 -> rep5).
+   SELECCION == 5 -> rep5;
+   SELECCION == 6 -> rep6;
+   SELECCION == 7 -> rep7;
+   SELECCION == 8 -> rep8;
+   SELECCION == 9 -> rep9
+   ).
 
 
 
-rep1 :- write('REPORTE1').
+rep1 :- 
+    write('=============REPORTE1============='),nl,
+    cliente(IDCliente,Nombrec,_,PaisCliente,_,Estadocivil,_),
+    registro(_,IDClienteR,IDhotelR,_,_,Opinion),
+    IDCliente = IDClienteR,
+    Opinion>5,
+    (
+        PaisCliente = 'italia';
+        PaisCliente = 'espanola';
+        PaisCliente = 'inglaterra';
+        PaisCliente = 'holanda';
+        PaisCliente = 'espanol'
+    ),
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,PaisCliente,Opinion,IDCliente]),
+    format('|~`-t~45||~n'),opcionrep.
 
-rep2 :- write('REPORTE2'),
+
+
+rep2 :- write('=============REPORTE2============='),nl,
 
 hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
 cliente(IDCliente,Nombrec,_,_,_,Estadocivil,_),
@@ -479,39 +511,215 @@ cliente(IDCliente,Nombrec,_,_,_,Estadocivil,_),
 registro(_,IDClienteR,IDhotelR,_,_,Opinion),
 %condiciones
 IDCliente==IDClienteR,
-IDClienteR==IDhotel,
+IDhotel==IDhotelR,
 Estrellash > 4,
 nl,
 format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Estrellash,Estadocivil,IDhotel]),
 format('|~`-t~45||~n'),
-fail.
+fail,opcionrep.
+
+
+rep3 :-
+    write('=============REPORTE3============='), nl,
+    findall([NombreT, Opinion, IDhotel, CargoT],
+            (
+                hotel(IDhotel, _, _, _, _, _, _, _, _),
+                trabajador(_, NombreT, CargoT, HotelT),
+                HotelT == IDhotel,
+                CargoT == 'Administrador',
+                registro(_,IDClienteR,IDhotelR,_,_,Opinion),
+                IDhotelR==IDhotel,
+                Opinion >= 5
+            ),
+            Resultados),
+    ImprimirRep3(Resultados),
+    opcionrep.
+
+ImprimirRep3([]).
+ImprimirRep3([[NombreT, Opinion, IDhotel, CargoT]|Resto]) :-
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [NombreT,Opinion,IDhotel,CargoT]),
+    format('|~`-t~45||~n'),
+    ImprimirRep3(Resto).
 
 
 
 
+% Para contar las reservaciones de cada hotel
+reservaciones_hotel(IDhotel, Count) :-
+    findall(IDhotel, registro(_,_,IDhotel,_,_,_), ListaReservaciones),
+    length(ListaReservaciones, Count).
 
-rep3 :- write('REPORTE3'),
+% Para obtener el hotel con mas reservaciones
+max_reservaciones_hotel(IDhotelMax, CountMax) :-
+    findall([Count, IDhotel], reservaciones_hotel(IDhotel, Count), ListaReservaciones),
+    sort(1, @>=, ListaReservaciones, [[CountMax, IDhotelMax]|_]).
 
-        hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
-        cliente(IDCliente,Nombrec,_,_,_,Estadocivil,_),
-        cliente(IDCliente,Nombrec,_,_,_,Estadocivil,_),
-        trabajador(_,NombreT,CargoT,HotelT),
+% Para contar las reservaciones de cada departamento
+reservaciones_departamento(IDdep, Count) :-
+    findall(IDdep, (hotel(_,_,_,_,_,_,_,IDdep,_), registro(_,_,IDhotel,_,_,_), IDhotel == IDdep), ListaReservaciones),
+    length(ListaReservaciones, Count).
 
-        % Condiciones
-        HotelT == IDhotel,
-        CargoT == 'Administrador',
-        Estrellash >= 4,
+% Para obtener el departamento con mas reservaciones
+max_reservaciones_departamento(IDdepMax, CountMax) :-
+    findall([Count, IDdep], reservaciones_departamento(IDdep, Count), ListaReservaciones),
+    sort(1, @>=, ListaReservaciones, [[CountMax, IDdepMax]|_]).
 
-        nl,
-        format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [NombreT,Estrellash,CargoT,IDhotel]),
-        format('|~`-t~45||~n'),
-        fail.
+% Para obtener el top 5 hoteles con mas reservaciones en clima cálido
+top5_hoteles :-
+    findall([Count, IDhotel], (reservaciones_hotel(IDhotel, Count), hotel(IDhotel, _, _, _, _, _, _, IDdep, _), departamento(IDdep, _, _, _, Clima, _), Clima == 'calor'), ListaReservaciones),
+    sort(1, @>=, ListaReservaciones, SortedReservaciones),
+    take(5, SortedReservaciones, Top5Reservaciones),
+    format('Top 5 Hoteles con mas reservaciones en clima Calido'), nl,
+    print_top5(Top5Reservaciones).
+
+% Para obtener el top 5 departamentos con mas reservaciones en clima cálido
+top5_departamentos :-
+    findall([Count, IDdep], (reservaciones_departamento(IDdep, Count), departamento(IDdep, _, _, _, Clima, _), Clima == 'calor'), ListaReservaciones),
+    sort(1, @>=, ListaReservaciones, SortedReservaciones),
+    take(5, SortedReservaciones, Top5Reservaciones),
+    format('Top 5 Departamentos con mas reservaciones en clima cálido:'), nl,
+    print_top5_departamentos(Top5Reservaciones).
+
+% Para tomar los primeros N elementos de una lista
+take(N, List, Front) :- length(Front, N), append(Front, _, List).
+
+% Para imprimir el top 5 hoteles
+print_top5([]).
+print_top5([[Count, ID]|Rest]) :-
+    hotel(ID, Nombre, _, _, _, _, _, _, _),
+    format('~s con ~d reservaciones', [Nombre, Count]), nl,
+    print_top5(Rest).
+
+% Para imprimir el top 5 departamentos
+print_top5_departamentos([]).
+print_top5_departamentos([[Count, ID]|Rest]) :-
+    departamento(ID, Nombre, _, _, _, _),
+    format('~s con ~d reservaciones', [Nombre, Count]), nl,
+    print_top5_departamentos(Rest).
+
+rep4 :-
+    write('=============REPORTE4============='), nl,
+    top5_hoteles,
+    nl,
+    top5_departamentos,opcionrep.
+
+
+rep5 :-
+    write('=============REPORTE5============='),
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,_,Opinion),
+    %condiciones
+   
+    IDCliente==IDClienteR,
+
+    IDdepR==IDdep,
+
+    Lenguajed == 'espanol',
+
+    dif(Paiscliente, 'Guatemala'),
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Paiscliente,Nombred,Nombreh]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
+
+
+rep6 :- write('=============REPORTE6============='),nl,
+
+
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdep,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+ 
+
+    Opinion >=7,
+    Estadia >=3,
+
+    
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Nombreh,Nombred,Lenguajed]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
 
 
 
-rep4 :- write('REPORTE4').
-rep5 :- write('REPORTE5').
-rep6 :- write('REPORTE6').
+
+rep7 :- write('=============REPORTE7============='),nl,
+
+
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdeph,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+    IDdep==IDdeph,
+    Estadia < 2,
+    Lenguajed=='ingles',
+    dif(Paiscliente, 'Guatemala'),
+    
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Nombreh,Paiscliente,Lenguajed]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
+
+
+.
+rep8 :- write('=============REPORTE8============='),nl,
+
+
+    hotel(IDhotel,Nombreh,_,Estrellash,_,_,_,IDdeph,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDdep==IDdeph,
+
+    Nombred=='peten',
+   
+    
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombrec,Nombreh,Paiscliente,Nombred]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
+
+
+
+rep9 :- write('=============REPORTE9============='),nl,
+
+
+    hotel(IDhotel,Nombreh,Direccionh,Estrellash,_,_,_,IDdeph,_),
+    cliente(IDCliente,Nombrec,_,Paiscliente,_,Estadocivil,_),
+    departamento(IDdep, Nombred, _, Lenguajed, Climad, _),
+    registro(IDdepR,IDClienteR,IDhotelR,_,Estadia,Opinion),
+    %condiciones
+
+    IDCliente==IDClienteR,
+    IDhotel==IDhotelR,
+    Opinion>6,
+    
+    Estadocivil=='casado',
+    Estadia >=3,
+    
+   
+    
+    nl,
+    format('|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~t~a~t~15+|~n', [Nombreh,Direccionh,Nombrec,Estadocivil]),
+    format('|~`-t~45||~n'),
+    fail,opcionrep.
+
+
+
 presupuesto :-
   write('Ingrese su presupuesto: '),
   read(PRESUPUESTO),
